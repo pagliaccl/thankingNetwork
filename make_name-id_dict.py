@@ -16,6 +16,9 @@ def main():
         if line == "":
             break
         j = json.loads(line)
+        # Delete line below when not using 1yearplus.json
+	if "tweet" in j:
+        	j = j["tweet"]
         name_id[j["user"]["screen_name"]] = int(j["user"]["id_str"])
     f.close ()
 

@@ -14,6 +14,13 @@ I = nx.Graph()
 G = nx.Graph()
 names = dict()
 invnames = dict()
+chris_recip_not_jeremy = set()
+jeremy_recip_not_chris = set()
+chris_central_not_jeremy = set()
+jeremy_central_not_chris = set()
+chris_mutual_not_jeremy = set()
+jeremy_mutual_not_chris = set()
+
 def main ():
     global J
     global I
@@ -26,6 +33,14 @@ def main ():
     global recipG
     global errs
     global keepers
+    global chris_recip_not_jeremy
+    global jeremy_recip_not_chris
+    global chris_central_not_jeremy
+    global jeremy_central_not_chris
+    global chris_mutual_not_jeremy
+    global jeremy_mutual_not_chris
+
+
 
     f = open("thank_you_no_onesies.pkl")
     J = pickle.load(f)
@@ -47,10 +62,9 @@ def main ():
     helpers = set(I.nodes())
     mutual = set(H.nodes())
     recipG = set(G.nodes())
-    errs = set()
     keepers = set()
     
-    f = file ("masterfile.csv")
+    f = file ("../1yearstats.csv")
     g = file ("master_3.csv", "w")
     line = f.readline()
     headers = line.split(",")
@@ -62,39 +76,56 @@ def main ():
         if line == "":
             break
         values = line.split(",")
-        #print ind["screen_name"]
-        #print line
+        
         name = values[ind["screen_name"]]
         if name in recipG:
+            if values[ind["R"]] == "0":
+                chris_recip_not_jeremy.add(name)
             values[ind["R"]] = "1"
             keepers.add(name)
         else:
-            errs.add(name)
+            if values[ind["R"]] == "1":
+                jeremy_recip_not_chris.add(name)
             values[ind["R"]] = "0"
+
         if name in recipG - mutual:
             values[ind["RXM"]] = "1"
         else:
             values[ind["RXM"]] = "0"
+
         if name in mutual:
+            if values[ind["M"]] == "0":
+                chris_mutual_not_jeremy.add(name)
             values[ind["M"]] = "1"
         else:
             values[ind["M"]] = "0"
+            if values[ind["M"]] == "1":
+                jeremy_mutual_not_chris.add(name)
+
         if name in helpers:
             values[ind["XBIN"]] = "1"
         else:
             values[ind["XBIN"]] = "0"
+
         if name in mutual - helpers:
             values[ind["BIN"]] = "1"
         else:
             values[ind["BIN"]] = "0"
+
         if name in helpers - central:
             values[ind["TH"]] = "1"
         else:
             values[ind["TH"]] = "0"
+
         if name in central:
+            if values[ind["CH"]] == "0":
+                chris_central_not_jeremy.add(name)
             values[ind["CH"]] = "1"
         else:
             values[ind["CH"]] = "0"
+            if values[ind["CH"]] == "1":
+                jeremy_central_not_chris.add(name)
+
             
         g.write (",".join(values))
     f.close ()

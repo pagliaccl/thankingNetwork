@@ -1,8 +1,13 @@
-# Filters twitter json file text field 
-# python -OO twep.py TWITTER_FILE REGEX
-
+# make_at_multidigraph.py
+# by Chris Homan
+#
+# Constructs a directed multiedge graph on Twitter users, where each
+# edges edge is a message from user1 with a mention of user2 ("@user2").
+#
 # usage:
-# export PYTHONIOENCODING=utf-8; python twaydar.py TWITTER_USER_FILE
+# python make_at_multidigraph.py JSON_FILE
+# E.g.
+# python make_at_multidigraph.py oneyear.filtered.json
 
 import nltk
 import sys
@@ -10,7 +15,6 @@ import re
 import json
 import networkx as nx
 import pickle
-import tweetokenize
 
 G = nx.MultiDiGraph()            
 def main():
@@ -23,33 +27,31 @@ def main():
         if line == "":
             break
         j = json.loads(line)
-        G.add_node(j["user"]["screen_name"])
-    f.close ()
-
+	# Delete line below when not using 1yearplus.json
+	if "tweet" in j:
+		j = j["tweet"]
+        G.add_node(j["user"]["screen_name"].lower())
+    
     # Add a multi-edge for each @
-    f = file (sys.argv[1])
-    #gettokens = tweetokenize.Tokenizer()
+    f.seek (0)
+    
     while True:
         line = f.readline()
         if line == "":
             break
         j = json.loads(line)
+        # Hack for dealing with the 1yearplus.json file
+        if "tweet" in j:
+                j = j["tweet"]
         
         tokens = nltk.word_tokenize(j["text"].encode('ascii', 'ignore') )
-        #tokens = gettokens.tokenize(j["text"])
-        #tokens = [lmtzr.lemmatize(w.lower()) for w in tokens]
-        #tokes = frozenset([lmtzr.lemmatize(w.lower()) for w in tokens])
-        #if tokens & frozenset({"homosexual", "homo", "lesbian", "dike", "gay"}):
         for i, x in enumerate(tokens):
             try:
                 if x == "@":
-                    from_user = j["user"]["screen_name"]
-                    to_user = tokens[i+1]
+                    from_user = j["user"]["screen_name"].lower()
+                    to_user = tokens[i+1].lower()
                     if to_user in G and from_user in G and to_user != from_user:
                         G.add_edge (from_user, to_user, tokens = tokens)
-                    if from_user == "KatieKruppner" and to_user == "TayyyJayyy":
-                        print j["text"]
-                #print j["user"]["screen_name"] + " " + tokens[i+1]
             except IndexError:
                 pass
         

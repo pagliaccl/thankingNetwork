@@ -15,9 +15,11 @@ To rerun, first type:
 > rm *.pkl
 
 You may have to play around with environment settings to get this to
-work. Here are my environment setting commands that I run before running the progrma
+work. Here are my environment setting commands that I run before running the program
 export PYTHONPATH=/usr/local/lib/python2.7/site-packages/;
 export PYTHONIOENCODING=utf-8;
+
+You may also need to install python libraries on which this code depends, such as networkx. We recommend using anaconda python to manage these libraries.
 
 Here is a brief dictionary of the graphs generated. There are others
 generated too:

@@ -3,7 +3,7 @@
 # You will need to change the line below to point to the json file you are using 
 # (Mine is in a directory called trowser, which you probably don't have in your filesystem)
 
-JSON_FILE=../trowser3/oneyear.json
+JSON_FILE=../Downloads/1year.json
 
 # Once you enter this line, the command to run (where the prompt is ">") is simply:
 
@@ -72,3 +72,6 @@ graph_stats.txt: at_graph.pkl at_no_onesies.pkl thank_you_no_onesies.pkl
 
 screen_name-id.pkl:
 	python -OO make_name-id_dict.py ${JSON_FILE} screen_name-id.pkl
+
+master_3.csv:
+	python -OO dump_nodes.py

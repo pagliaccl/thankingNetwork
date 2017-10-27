@@ -13,16 +13,12 @@ def main():
     
     # Add nodes in the graph
     f = file (sys.argv[1])
-    while True:
-        line = f.readline()
-        if line == "":
-            break
+    while line in f:
         j = json.loads(line)
         if j["user"]["screen_name"] == "miranduhhh_xo" or j["user"]["screen_name"] == "Briannainclema":
             print j["user"]["screen_name"] + "\t" + j["text"]
     f.close ()
 
-    
-    
+      
 if __name__ == "__main__":
     main()
